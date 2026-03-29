@@ -11,7 +11,7 @@
             --bg-color: #0f172a;
             --card-bg: rgba(30, 41, 59, 0.7);
             --text-color: #f8fafc;
-            --primary: #3b82f6; /* برگشت به همون آبی خفن */
+            --primary: #3b82f6;
             --primary-hover: #2563eb;
             --danger: #ef4444;
             --success: #10b981;
@@ -41,7 +41,6 @@
             display: flex;
             flex-direction: column;
             transition: all 0.4s ease;
-            /* گرادیانت پس‌زمینه هم برگشت به آبی/بنفش */
             background-image: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15), transparent 40%),
                               radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.15), transparent 40%);
         }
@@ -256,11 +255,16 @@
             }
         };
 
+        // تابع خوندن از سرور (کلا پاک شد)، فقط از لوکال می‌خونه
         function init() {
-            const savedData = localStorage.getItem(STORAGE_KEY);
-            if (savedData) items = JSON.parse(savedData);
             if (sessionStorage.getItem('aynaz_logged_in') === 'true') showDashboard();
             updateUI();
+
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            if (savedData) {
+                items = JSON.parse(savedData);
+                if (!document.getElementById('dashboard-section').classList.contains('hidden')) renderLinks();
+            }
         }
 
         function checkLogin() {
@@ -331,8 +335,8 @@
             window.open(urlToOpen, '_blank'); 
         }
 
-        function saveData() {
-            
+        // فقط اطلاعات رو می‌فرسته روی سرور و اگر ارور داد کاملا سایلنت می‌مونه
+        async function saveData() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); 
 
             if(!BIN_ID) return;
@@ -346,9 +350,8 @@
                     body: JSON.stringify(items)
                 });
             } catch (e) {
-                
+                // کاملا خالی تا هیچ خطایی نشون نده
             }
-        
         }
 
         function exportData() {
