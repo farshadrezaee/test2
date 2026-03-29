@@ -142,11 +142,11 @@ function login(){
 }
 
 function save(){
-  localStorage.setItem('links',JSON.stringify(links));
+  localStorage.setItem('links_2',JSON.stringify(links));
 }
 
 function load(){
-  let s=localStorage.getItem('links');
+  let s=localStorage.getItem('links_2');
   if(s) links=JSON.parse(s);
   render();
 }
