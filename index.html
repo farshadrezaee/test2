@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Pro Dashboard</title>
+    <title>Aynaz Panel</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Vazirmatn:wght@300;400;600&display=swap');
 
@@ -11,20 +11,22 @@
             --bg-color: #0f172a;
             --card-bg: rgba(30, 41, 59, 0.7);
             --text-color: #f8fafc;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
+            --primary: #ec4899; /* رنگ اصلی رو به صورتی/بنفش تغییر دادم تا با اسم آیناز پنل هماهنگ‌تر بشه */
+            --primary-hover: #db2777;
             --danger: #ef4444;
             --success: #10b981;
+            --warning: #f59e0b;
             --glass-border: rgba(255, 255, 255, 0.1);
             --input-bg: rgba(0, 0, 0, 0.2);
             --icon-color: #94a3b8;
         }
 
         .light-theme {
-            --bg-color: #f1f5f9;
+            --bg-color: #fdf2f8;
             --card-bg: rgba(255, 255, 255, 0.8);
             --text-color: #0f172a;
-            --primary: #6366f1;
+            --primary: #d946ef;
+            --primary-hover: #c026d3;
             --glass-border: rgba(0, 0, 0, 0.1);
             --input-bg: rgba(0, 0, 0, 0.05);
             --icon-color: #64748b;
@@ -40,57 +42,51 @@
             display: flex;
             flex-direction: column;
             transition: all 0.4s ease;
-            background-image: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15), transparent 40%),
+            background-image: radial-gradient(circle at top right, rgba(236, 72, 153, 0.15), transparent 40%),
                               radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.15), transparent 40%);
         }
 
         body[dir="rtl"] { font-family: 'Vazirmatn', 'Poppins', sans-serif; }
 
-        /* Glassmorphism Classes */
         .glass {
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
         }
 
-        /* Top Navigation */
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            margin: 1rem;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 2rem; margin: 1rem;
         }
 
-        .brand { font-size: 1.5rem; font-weight: 600; background: linear-gradient(to right, #3b82f6, #8b5cf6); -webkit-background-clip: text; color: transparent; letter-spacing: 1px; }
+        .brand { 
+            font-size: 1.6rem; font-weight: 600; 
+            background: linear-gradient(to right, var(--primary), #8b5cf6); 
+            -webkit-background-clip: text; color: transparent; letter-spacing: 1px; 
+        }
 
         .controls { display: flex; gap: 10px; }
         
         select, button, input {
-            padding: 10px 16px;
-            border-radius: 12px;
-            border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.05);
-            color: inherit;
-            font-family: inherit;
-            outline: none;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 10px 16px; border-radius: 12px; border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05); color: inherit; font-family: inherit;
+            outline: none; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        button { cursor: pointer; font-weight: 600; background: var(--primary); color: white; border: none; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
-        button:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
+        button { cursor: pointer; font-weight: 600; background: var(--primary); color: white; border: none; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
+        button:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4); }
         button.danger { background: var(--danger); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
         button.danger:hover { box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4); }
         button.success { background: var(--success); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+        button.warning { background: var(--warning); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
         button.secondary { background: transparent; border: 1px solid var(--primary); color: var(--primary); box-shadow: none; }
-        button.secondary:hover { background: rgba(59, 130, 246, 0.1); }
+        button.secondary:hover { background: rgba(236, 72, 153, 0.1); }
 
         main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 1rem; }
 
-        /* --- NEW LOGIN UI --- */
         @keyframes popIn {
             0% { opacity: 0; transform: scale(0.9) translateY(20px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
@@ -98,60 +94,40 @@
 
         #login-section { 
             width: 100%; max-width: 420px; padding: 3rem 2.5rem; text-align: center; 
-            animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            position: relative; overflow: hidden;
-        }
-
-        #login-section::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(59,130,246,0.05), transparent 60%); z-index: -1;
+            animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; position: relative; overflow: hidden;
         }
 
         .login-logo {
             width: 70px; height: 70px; margin: 0 auto 1.5rem auto;
             background: linear-gradient(135deg, var(--primary), #8b5cf6);
             border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 0 25px rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.5);
         }
 
         .login-logo svg { width: 32px; height: 32px; fill: white; }
-
-        #login-section h2 { margin-bottom: 0.5rem; font-size: 1.8rem; letter-spacing: 0.5px; }
+        #login-section h2 { margin-bottom: 0.5rem; font-size: 1.8rem; }
         .login-subtitle { font-size: 0.9rem; color: var(--icon-color); margin-bottom: 2rem; }
 
         .input-wrapper { position: relative; margin-bottom: 1.5rem; }
-        .input-wrapper svg {
-            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
-            fill: var(--icon-color); width: 20px; height: 20px; transition: 0.3s;
-        }
-        .input-wrapper input {
-            width: 100%; padding: 14px 14px 14px 48px; background: var(--input-bg);
-            border: 1px solid var(--glass-border); font-size: 1rem;
-        }
-        .input-wrapper input:focus {
-            border-color: var(--primary); background: rgba(255, 255, 255, 0.02);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-        }
+        .input-wrapper svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); fill: var(--icon-color); width: 20px; height: 20px; transition: 0.3s; }
+        .input-wrapper input { width: 100%; padding: 14px 14px 14px 48px; background: var(--input-bg); border: 1px solid var(--glass-border); font-size: 1rem; }
+        .input-wrapper input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.15); }
         .input-wrapper input:focus + svg { fill: var(--primary); }
-
-        /* RTL adjustments for input wrapper */
         body[dir="rtl"] .input-wrapper svg { left: auto; right: 16px; }
         body[dir="rtl"] .input-wrapper input { padding: 14px 48px 14px 14px; }
-
         #login-section button { width: 100%; padding: 14px; font-size: 1.1rem; border-radius: 12px; }
 
-        /* Dashboard Screen */
-        #dashboard-section { width: 100%; max-width: 800px; padding: 2.5rem; animation: popIn 0.5s ease forwards; }
+        #dashboard-section { width: 100%; max-width: 900px; padding: 2.5rem; animation: popIn 0.5s ease forwards; }
         .hidden { display: none !important; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
         .stat-card { padding: 1.5rem; text-align: center; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); }
         .stat-card h3 { font-size: 2.2rem; color: var(--primary); margin-top: 5px; }
 
-        .input-group { display: flex; gap: 10px; margin-bottom: 1.5rem; }
-        .input-group input { flex: 1; background: var(--input-bg); }
+        .input-group { display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .input-group input { flex: 1; background: var(--input-bg); min-width: 200px; }
+        .input-group select { background: var(--input-bg); cursor: pointer; }
 
-        /* Link List */
         .link-list { display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding-right: 5px; }
         .link-list::-webkit-scrollbar { width: 6px; }
         .link-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
@@ -164,24 +140,26 @@
         .link-item:hover { border-color: var(--primary); background: rgba(255, 255, 255, 0.06); transform: translateX(5px); }
         body[dir="rtl"] .link-item:hover { transform: translateX(-5px); }
         
-        .link-actions { display: flex; gap: 8px; flex-shrink: 0; margin-inline-start: 15px; }
-        .link-actions button { padding: 8px 14px; font-size: 0.85rem; border-radius: 8px; }
+        .item-content { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .cat-badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 8px; font-weight: 600; white-space: nowrap; }
+        .cat-general { background: rgba(59, 130, 246, 0.2); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .cat-work { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .cat-personal { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
 
-        /* Toast Notification */
+        .link-actions { display: flex; gap: 8px; flex-shrink: 0; margin-inline-start: 15px; }
+        .link-actions button { padding: 8px 12px; font-size: 0.85rem; border-radius: 8px; }
+
         #toast {
-            position: fixed; bottom: 30px; right: 30px;
-            background: var(--success); color: white;
-            padding: 14px 28px; border-radius: 12px; font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            opacity: 0; transform: translateY(20px) scale(0.9);
-            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; z-index: 1000;
+            position: fixed; bottom: 30px; right: 30px; background: var(--success); color: white;
+            padding: 14px 28px; border-radius: 12px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            opacity: 0; transform: translateY(20px) scale(0.9); transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; z-index: 1000;
         }
         #toast.show { opacity: 1; transform: translateY(0) scale(1); }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .input-group { flex-direction: column; }
             .link-item { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .link-actions { width: 100%; justify-content: flex-end; }
+            .link-actions { width: 100%; justify-content: flex-end; flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -190,7 +168,7 @@
     <div id="toast">Message</div>
 
     <header class="glass">
-        <div class="brand">Nexus Pro</div>
+        <div class="brand" id="brandName">Aynaz Panel</div>
         <div class="controls">
             <select id="langSelect" onchange="changeLang(this.value)">
                 <option value="en">EN</option>
@@ -206,21 +184,21 @@
             <div class="login-logo">
                 <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
             </div>
-            <h2 id="t-login-title">Secure Login</h2>
-            <p class="login-subtitle" id="t-login-sub">Enter your credentials to continue</p>
+            <h2 id="t-login-title">Aynaz Panel</h2>
+            <p class="login-subtitle" id="t-login-sub">Enter your credentials</p>
             
             <div class="input-wrapper">
                 <input type="password" id="passwordInput" placeholder="Password (1234)">
                 <svg viewBox="0 0 24 24"><path d="M12.65 10A5.99 5.99 0 0 0 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 0 0 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
             </div>
             
-            <button onclick="checkLogin()" id="t-login-btn">Authenticate</button>
+            <button onclick="checkLogin()" id="t-login-btn">Login</button>
         </div>
 
         <div id="dashboard-section" class="glass hidden">
             <div class="stats-grid">
                 <div class="stat-card glass">
-                    <div id="t-total">Total Links</div>
+                    <div id="t-total">Total Items</div>
                     <h3 id="totalCount">0</h3>
                 </div>
                 <div class="stat-card glass" style="display: flex; justify-content: center; align-items: center;">
@@ -229,12 +207,17 @@
             </div>
 
             <div class="input-group">
-                <input type="url" id="newUrl" placeholder="https://example.com">
-                <button onclick="addUrl()" id="t-add-btn">Add URL</button>
+                <input type="text" id="newUrl" placeholder="Enter text or URL...">
+                <select id="itemCategory">
+                    <option value="general" id="cat-gen">🌐 General</option>
+                    <option value="work" id="cat-work">💼 Work</option>
+                    <option value="personal" id="cat-per">👤 Personal</option>
+                </select>
+                <button onclick="addUrl()" id="t-add-btn">Add Item</button>
             </div>
 
             <div class="input-group">
-                <input type="text" id="searchInput" placeholder="Search links..." oninput="renderLinks()">
+                <input type="text" id="searchInput" placeholder="Search..." oninput="renderLinks()">
             </div>
 
             <div class="link-list" id="linksContainer"></div>
@@ -242,46 +225,48 @@
     </main>
 
     <script>
-        // Data & State
-        const STORAGE_KEY = 'nexus_pro_data_v4'; // کلید جدید برای اطمینان از اعمال تغییرات
+        // Data & State (Updated Storage Key for new version)
+        const STORAGE_KEY = 'aynaz_panel_v5'; 
         const SECRET_PASS = 'farshadddd';
-        let links = [];
+        let items = [];
         let isDark = true;
         let lang = 'en';
 
         // Dictionary
         const dict = {
             en: {
-                loginTitle: "Secure Login", loginSub: "Enter your credentials to continue", passPlaceholder: "Password", loginBtn: "Authenticate",
+                brand: "Aynaz Panel", loginTitle: "Welcome Back", loginSub: "Enter your secure password", passPlaceholder: "Password", loginBtn: "Login",
                 logout: "Logout", themeLight: "☀️ Light", themeDark: "🌙 Dark",
-                total: "Total Links", export: "📦 Export Data", addUrlPh: "https://example.com",
-                addBtn: "Add URL", searchPh: "Search links...", btnVisit: "Visit",
-                btnCopy: "Copy", btnDel: "Delete", msgLogin: "Welcome back!",
-                msgWrong: "Incorrect password!", msgAdded: "Link added!", msgCopied: "Copied to clipboard!",
-                msgDeleted: "Link deleted!", msgEmpty: "Please enter a valid URL."
+                total: "Total Items", export: "📦 Export Data", addUrlPh: "Enter text or URL...",
+                addBtn: "Add Item", searchPh: "Search in items...", btnVisit: "Open",
+                btnCopy: "Copy", btnEdit: "Edit", btnDel: "Delete", msgLogin: "Welcome to Aynaz Panel!",
+                msgWrong: "Incorrect password!", msgAdded: "Item added!", msgCopied: "Copied!",
+                msgDeleted: "Item deleted!", msgEmpty: "Please enter something.", msgEdit: "Item updated!",
+                catGen: "🌐 General", catWork: "💼 Work", catPer: "👤 Personal", editPrompt: "Edit your item:"
             },
             fa: {
-                loginTitle: "ورود امن", loginSub: "برای ادامه رمز عبور خود را وارد کنید", passPlaceholder: "رمز عبور", loginBtn: "تایید هویت",
+                brand: "آیناز پنل", loginTitle: "خوش آمدید", loginSub: "رمز عبور خود را وارد کنید", passPlaceholder: "رمز عبور", loginBtn: "ورود به پنل",
                 logout: "خروج", themeLight: "☀️ روشن", themeDark: "🌙 تاریک",
-                total: "تعداد لینک‌ها", export: "📦 دریافت بک‌آپ", addUrlPh: "لینک جدید را وارد کنید...",
-                addBtn: "افزودن", searchPh: "جستجو در لینک‌ها...", btnVisit: "باز کردن",
-                btnCopy: "کپی", btnDel: "حذف", msgLogin: "خوش آمدید!",
-                msgWrong: "رمز عبور اشتباه است!", msgAdded: "لینک اضافه شد!", msgCopied: "در حافظه کپی شد!",
-                msgDeleted: "لینک حذف شد!", msgEmpty: "لطفاً یک لینک معتبر وارد کنید."
+                total: "تعداد آیتم‌ها", export: "📦 دریافت بک‌آپ", addUrlPh: "متن یا لینک را وارد کنید...",
+                addBtn: "افزودن آیتم", searchPh: "جستجو...", btnVisit: "باز کردن",
+                btnCopy: "کپی", btnEdit: "ویرایش", btnDel: "حذف", msgLogin: "به آیناز پنل خوش آمدید!",
+                msgWrong: "رمز عبور اشتباه است!", msgAdded: "آیتم اضافه شد!", msgCopied: "کپی شد!",
+                msgDeleted: "آیتم حذف شد!", msgEmpty: "لطفاً یک متن وارد کنید.", msgEdit: "ویرایش با موفقیت انجام شد!",
+                catGen: "🌐 عمومی", catWork: "💼 کاری", catPer: "👤 شخصی", editPrompt: "متن جدید را وارد کنید:"
             }
         };
 
         function init() {
             const savedData = localStorage.getItem(STORAGE_KEY);
-            if (savedData) links = JSON.parse(savedData);
-            if (sessionStorage.getItem('nexus_logged_in') === 'true') showDashboard();
+            if (savedData) items = JSON.parse(savedData);
+            if (sessionStorage.getItem('aynaz_logged_in') === 'true') showDashboard();
             updateUI();
         }
 
         function checkLogin() {
             const pass = document.getElementById('passwordInput').value;
             if (pass === SECRET_PASS) {
-                sessionStorage.setItem('nexus_logged_in', 'true');
+                sessionStorage.setItem('aynaz_logged_in', 'true');
                 document.getElementById('passwordInput').value = '';
                 showDashboard();
                 showToast(dict[lang].msgLogin);
@@ -291,11 +276,10 @@
         }
 
         function logout() {
-            sessionStorage.removeItem('nexus_logged_in');
+            sessionStorage.removeItem('aynaz_logged_in');
             document.getElementById('dashboard-section').classList.add('hidden');
             document.getElementById('logoutBtn').classList.add('hidden');
             document.getElementById('login-section').classList.remove('hidden');
-            // ریست کردن انیمیشن
             document.getElementById('login-section').style.animation = 'none';
             setTimeout(() => document.getElementById('login-section').style.animation = '', 10);
         }
@@ -309,36 +293,60 @@
 
         function addUrl() {
             const input = document.getElementById('newUrl');
-            const url = input.value.trim();
-            if (!url) { showToast(dict[lang].msgEmpty, true); return; }
-            const finalUrl = (!url.startsWith('http://') && !url.startsWith('https://')) ? 'https://' + url : url;
-            links.unshift(finalUrl);
+            const cat = document.getElementById('itemCategory').value;
+            const text = input.value.trim();
+            if (!text) { showToast(dict[lang].msgEmpty, true); return; }
+            
+            // ذخیره دقیقاً همان متنی که وارد شده بدون تغییر
+            items.unshift({ text: text, category: cat });
             saveData();
             input.value = '';
             renderLinks();
             showToast(dict[lang].msgAdded);
         }
 
+        function editUrl(index) {
+            const currentText = items[index].text;
+            const newText = prompt(dict[lang].editPrompt, currentText);
+            if (newText && newText.trim() !== "") {
+                items[index].text = newText.trim();
+                saveData();
+                renderLinks();
+                showToast(dict[lang].msgEdit);
+            }
+        }
+
         function deleteUrl(index) {
-            links.splice(index, 1);
+            items.splice(index, 1);
             saveData();
             renderLinks();
             showToast(dict[lang].msgDeleted, true);
         }
 
-        function copyUrl(url) {
-            navigator.clipboard.writeText(url).then(() => showToast(dict[lang].msgCopied));
+        function copyUrl(text) {
+            navigator.clipboard.writeText(text).then(() => showToast(dict[lang].msgCopied));
         }
 
-        function openUrl(url) { window.open(url, '_blank'); }
-        function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(links)); }
+        function openUrl(text) { 
+            // تلاش برای باز کردن اگر شبیه لینک بود
+            const urlToOpen = text.startsWith('http') ? text : 'https://' + text;
+            window.open(urlToOpen, '_blank'); 
+        }
+
+        function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }
 
         function exportData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(links, null, 2));
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(items, null, 2));
             const dlAnchorElem = document.createElement('a');
             dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", "nexus_links_backup.json");
+            dlAnchorElem.setAttribute("download", "aynaz_panel_backup.json");
             dlAnchorElem.click();
+        }
+
+        function getCatName(catValue) {
+            if(catValue === 'work') return dict[lang].catWork;
+            if(catValue === 'personal') return dict[lang].catPer;
+            return dict[lang].catGen;
         }
 
         function renderLinks() {
@@ -346,24 +354,36 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             container.innerHTML = '';
             let count = 0;
-            links.forEach((url, originalIndex) => {
-                if (url.toLowerCase().includes(searchTerm)) {
+            
+            items.forEach((item, originalIndex) => {
+                if (item.text.toLowerCase().includes(searchTerm)) {
                     count++;
                     const div = document.createElement('div');
                     div.className = 'link-item';
                     
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'item-content';
+                    
+                    const badge = document.createElement('span');
+                    badge.className = `cat-badge cat-${item.category}`;
+                    badge.textContent = getCatName(item.category);
+                    
                     const textSpan = document.createElement('span');
-                    textSpan.textContent = url;
+                    textSpan.textContent = item.text;
+                    
+                    contentDiv.appendChild(badge);
+                    contentDiv.appendChild(textSpan);
                     
                     const actionsDiv = document.createElement('div');
                     actionsDiv.className = 'link-actions';
                     
                     actionsDiv.innerHTML = `
-                        <button class="success" onclick="openUrl('${url}')">${dict[lang].btnVisit}</button>
-                        <button class="secondary" onclick="copyUrl('${url}')">${dict[lang].btnCopy}</button>
+                        <button class="success" onclick="openUrl('${item.text}')">${dict[lang].btnVisit}</button>
+                        <button class="secondary" onclick="copyUrl('${item.text}')">${dict[lang].btnCopy}</button>
+                        <button class="warning" onclick="editUrl(${originalIndex})">${dict[lang].btnEdit}</button>
                         <button class="danger" onclick="deleteUrl(${originalIndex})">${dict[lang].btnDel}</button>
                     `;
-                    div.appendChild(textSpan);
+                    div.appendChild(contentDiv);
                     div.appendChild(actionsDiv);
                     container.appendChild(div);
                 }
@@ -398,6 +418,7 @@
 
         function updateUI() {
             const t = dict[lang];
+            document.getElementById('brandName').innerText = t.brand;
             document.getElementById('t-login-title').innerText = t.loginTitle;
             document.getElementById('t-login-sub').innerText = t.loginSub;
             document.getElementById('passwordInput').placeholder = t.passPlaceholder;
@@ -409,6 +430,9 @@
             document.getElementById('newUrl').placeholder = t.addUrlPh;
             document.getElementById('t-add-btn').innerText = t.addBtn;
             document.getElementById('searchInput').placeholder = t.searchPh;
+            document.getElementById('cat-gen').innerText = t.catGen;
+            document.getElementById('cat-work').innerText = t.catWork;
+            document.getElementById('cat-per').innerText = t.catPer;
             
             if (!document.getElementById('dashboard-section').classList.contains('hidden')) renderLinks();
         }
