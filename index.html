@@ -335,7 +335,7 @@
             
             localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); 
 
-            if(!BIN_ID || BIN_ID === 'ایدی_بین_شما_اینجا') return;
+            if(!BIN_ID) return;
             try {
                 await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                     method: 'PUT',
