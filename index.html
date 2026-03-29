@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farshad Pro Dashboard</title>
+    <title>Nexus Pro Dashboard</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Vazirmatn:wght@300;400;600&display=swap');
 
@@ -16,6 +16,8 @@
             --danger: #ef4444;
             --success: #10b981;
             --glass-border: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(0, 0, 0, 0.2);
+            --icon-color: #94a3b8;
         }
 
         .light-theme {
@@ -24,6 +26,8 @@
             --text-color: #0f172a;
             --primary: #6366f1;
             --glass-border: rgba(0, 0, 0, 0.1);
+            --input-bg: rgba(0, 0, 0, 0.05);
+            --icon-color: #64748b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -36,8 +40,8 @@
             display: flex;
             flex-direction: column;
             transition: all 0.4s ease;
-            background-image: radial-gradient(circle at top right, rgba(59, 130, 246, 0.2), transparent 40%),
-                              radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.2), transparent 40%);
+            background-image: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.15), transparent 40%);
         }
 
         body[dir="rtl"] { font-family: 'Vazirmatn', 'Poppins', sans-serif; }
@@ -45,11 +49,11 @@
         /* Glassmorphism Classes */
         .glass {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
         /* Top Navigation */
@@ -61,78 +65,118 @@
             margin: 1rem;
         }
 
-        .brand { font-size: 1.5rem; font-weight: 600; background: linear-gradient(to right, #3b82f6, #8b5cf6); -webkit-background-clip: text; color: transparent; }
+        .brand { font-size: 1.5rem; font-weight: 600; background: linear-gradient(to right, #3b82f6, #8b5cf6); -webkit-background-clip: text; color: transparent; letter-spacing: 1px; }
 
         .controls { display: flex; gap: 10px; }
         
         select, button, input {
             padding: 10px 16px;
-            border-radius: 8px;
+            border-radius: 12px;
             border: 1px solid var(--glass-border);
             background: rgba(255, 255, 255, 0.05);
             color: inherit;
             font-family: inherit;
             outline: none;
-            transition: 0.3s;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        button { cursor: pointer; font-weight: 600; background: var(--primary); color: white; border: none; }
-        button:hover { filter: brightness(1.1); transform: translateY(-2px); }
-        button.danger { background: var(--danger); }
-        button.success { background: var(--success); }
-        button.secondary { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        button { cursor: pointer; font-weight: 600; background: var(--primary); color: white; border: none; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+        button:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
+        button.danger { background: var(--danger); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+        button.danger:hover { box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4); }
+        button.success { background: var(--success); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+        button.secondary { background: transparent; border: 1px solid var(--primary); color: var(--primary); box-shadow: none; }
+        button.secondary:hover { background: rgba(59, 130, 246, 0.1); }
 
-        /* Main Container */
         main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 1rem; }
 
-        /* Login Screen */
-        #login-section { width: 100%; max-width: 400px; padding: 2.5rem; text-align: center; }
-        #login-section h2 { margin-bottom: 1.5rem; }
-        #login-section input { width: 100%; margin-bottom: 1rem; background: rgba(0,0,0,0.2); }
-        #login-section button { width: 100%; padding: 12px; }
+        /* --- NEW LOGIN UI --- */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        #login-section { 
+            width: 100%; max-width: 420px; padding: 3rem 2.5rem; text-align: center; 
+            animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative; overflow: hidden;
+        }
+
+        #login-section::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(59,130,246,0.05), transparent 60%); z-index: -1;
+        }
+
+        .login-logo {
+            width: 70px; height: 70px; margin: 0 auto 1.5rem auto;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.5);
+        }
+
+        .login-logo svg { width: 32px; height: 32px; fill: white; }
+
+        #login-section h2 { margin-bottom: 0.5rem; font-size: 1.8rem; letter-spacing: 0.5px; }
+        .login-subtitle { font-size: 0.9rem; color: var(--icon-color); margin-bottom: 2rem; }
+
+        .input-wrapper { position: relative; margin-bottom: 1.5rem; }
+        .input-wrapper svg {
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+            fill: var(--icon-color); width: 20px; height: 20px; transition: 0.3s;
+        }
+        .input-wrapper input {
+            width: 100%; padding: 14px 14px 14px 48px; background: var(--input-bg);
+            border: 1px solid var(--glass-border); font-size: 1rem;
+        }
+        .input-wrapper input:focus {
+            border-color: var(--primary); background: rgba(255, 255, 255, 0.02);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+        .input-wrapper input:focus + svg { fill: var(--primary); }
+
+        /* RTL adjustments for input wrapper */
+        body[dir="rtl"] .input-wrapper svg { left: auto; right: 16px; }
+        body[dir="rtl"] .input-wrapper input { padding: 14px 48px 14px 14px; }
+
+        #login-section button { width: 100%; padding: 14px; font-size: 1.1rem; border-radius: 12px; }
 
         /* Dashboard Screen */
-        #dashboard-section { width: 100%; max-width: 800px; padding: 2rem; }
+        #dashboard-section { width: 100%; max-width: 800px; padding: 2.5rem; animation: popIn 0.5s ease forwards; }
         .hidden { display: none !important; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .stat-card { padding: 1.5rem; text-align: center; border-radius: 12px; background: rgba(255,255,255,0.02); }
-        .stat-card h3 { font-size: 2rem; color: var(--primary); }
+        .stat-card { padding: 1.5rem; text-align: center; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); }
+        .stat-card h3 { font-size: 2.2rem; color: var(--primary); margin-top: 5px; }
 
         .input-group { display: flex; gap: 10px; margin-bottom: 1.5rem; }
-        .input-group input { flex: 1; background: rgba(0,0,0,0.2); }
+        .input-group input { flex: 1; background: var(--input-bg); }
 
         /* Link List */
-        .link-list { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px; }
+        .link-list { display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding-right: 5px; }
         .link-list::-webkit-scrollbar { width: 6px; }
         .link-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
         .link-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid transparent;
-            transition: 0.3s;
-            word-break: break-all;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.2rem; border-radius: 14px; background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent; transition: 0.3s; word-break: break-all;
         }
-        .link-item:hover { border-color: var(--primary); background: rgba(255, 255, 255, 0.08); }
+        .link-item:hover { border-color: var(--primary); background: rgba(255, 255, 255, 0.06); transform: translateX(5px); }
+        body[dir="rtl"] .link-item:hover { transform: translateX(-5px); }
         
         .link-actions { display: flex; gap: 8px; flex-shrink: 0; margin-inline-start: 15px; }
-        .link-actions button { padding: 6px 12px; font-size: 0.85rem; }
+        .link-actions button { padding: 8px 14px; font-size: 0.85rem; border-radius: 8px; }
 
         /* Toast Notification */
         #toast {
-            position: fixed; bottom: 20px; right: 20px;
+            position: fixed; bottom: 30px; right: 30px;
             background: var(--success); color: white;
-            padding: 12px 24px; border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            opacity: 0; transform: translateY(20px);
-            transition: 0.4s ease; pointer-events: none; z-index: 1000;
+            padding: 14px 28px; border-radius: 12px; font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            opacity: 0; transform: translateY(20px) scale(0.9);
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; z-index: 1000;
         }
-        #toast.show { opacity: 1; transform: translateY(0); }
+        #toast.show { opacity: 1; transform: translateY(0) scale(1); }
 
         @media (max-width: 600px) {
             .input-group { flex-direction: column; }
@@ -159,8 +203,17 @@
 
     <main>
         <div id="login-section" class="glass">
-            <h2 id="t-login-title">System Login</h2>
-            <input type="password" id="passwordInput" placeholder="Enter Password (1234)">
+            <div class="login-logo">
+                <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+            </div>
+            <h2 id="t-login-title">Secure Login</h2>
+            <p class="login-subtitle" id="t-login-sub">Enter your credentials to continue</p>
+            
+            <div class="input-wrapper">
+                <input type="password" id="passwordInput" placeholder="Password (1234)">
+                <svg viewBox="0 0 24 24"><path d="M12.65 10A5.99 5.99 0 0 0 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 0 0 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+            </div>
+            
             <button onclick="checkLogin()" id="t-login-btn">Authenticate</button>
         </div>
 
@@ -184,23 +237,22 @@
                 <input type="text" id="searchInput" placeholder="Search links..." oninput="renderLinks()">
             </div>
 
-            <div class="link-list" id="linksContainer">
-                </div>
+            <div class="link-list" id="linksContainer"></div>
         </div>
     </main>
 
     <script>
         // Data & State
-        const STORAGE_KEY = 'nexus_pro_data_v3';
-        const SECRET_PASS = 'farshadddd'; // رمز ورود پیش‌فرض
+        const STORAGE_KEY = 'nexus_pro_data_v4'; // کلید جدید برای اطمینان از اعمال تغییرات
+        const SECRET_PASS = 'farshadddd';
         let links = [];
         let isDark = true;
         let lang = 'en';
 
-        // Dictionary for Translations
+        // Dictionary
         const dict = {
             en: {
-                loginTitle: "System Login", passPlaceholder: "Enter Password", loginBtn: "Authenticate",
+                loginTitle: "Secure Login", loginSub: "Enter your credentials to continue", passPlaceholder: "Password", loginBtn: "Authenticate",
                 logout: "Logout", themeLight: "☀️ Light", themeDark: "🌙 Dark",
                 total: "Total Links", export: "📦 Export Data", addUrlPh: "https://example.com",
                 addBtn: "Add URL", searchPh: "Search links...", btnVisit: "Visit",
@@ -209,7 +261,7 @@
                 msgDeleted: "Link deleted!", msgEmpty: "Please enter a valid URL."
             },
             fa: {
-                loginTitle: "ورود به سیستم", passPlaceholder: "رمز عبور را وارد کنید", loginBtn: "تایید هویت",
+                loginTitle: "ورود امن", loginSub: "برای ادامه رمز عبور خود را وارد کنید", passPlaceholder: "رمز عبور", loginBtn: "تایید هویت",
                 logout: "خروج", themeLight: "☀️ روشن", themeDark: "🌙 تاریک",
                 total: "تعداد لینک‌ها", export: "📦 دریافت بک‌آپ", addUrlPh: "لینک جدید را وارد کنید...",
                 addBtn: "افزودن", searchPh: "جستجو در لینک‌ها...", btnVisit: "باز کردن",
@@ -219,19 +271,13 @@
             }
         };
 
-        // Initialize
         function init() {
             const savedData = localStorage.getItem(STORAGE_KEY);
             if (savedData) links = JSON.parse(savedData);
-            
-            // Check session
-            if (sessionStorage.getItem('nexus_logged_in') === 'true') {
-                showDashboard();
-            }
+            if (sessionStorage.getItem('nexus_logged_in') === 'true') showDashboard();
             updateUI();
         }
 
-        // Authentication
         function checkLogin() {
             const pass = document.getElementById('passwordInput').value;
             if (pass === SECRET_PASS) {
@@ -249,6 +295,9 @@
             document.getElementById('dashboard-section').classList.add('hidden');
             document.getElementById('logoutBtn').classList.add('hidden');
             document.getElementById('login-section').classList.remove('hidden');
+            // ریست کردن انیمیشن
+            document.getElementById('login-section').style.animation = 'none';
+            setTimeout(() => document.getElementById('login-section').style.animation = '', 10);
         }
 
         function showDashboard() {
@@ -258,16 +307,12 @@
             renderLinks();
         }
 
-        // URL Management
         function addUrl() {
             const input = document.getElementById('newUrl');
             const url = input.value.trim();
             if (!url) { showToast(dict[lang].msgEmpty, true); return; }
-            
-            // Auto add https:// if missing
             const finalUrl = (!url.startsWith('http://') && !url.startsWith('https://')) ? 'https://' + url : url;
-            
-            links.unshift(finalUrl); // Add to top
+            links.unshift(finalUrl);
             saveData();
             input.value = '';
             renderLinks();
@@ -282,18 +327,11 @@
         }
 
         function copyUrl(url) {
-            navigator.clipboard.writeText(url).then(() => {
-                showToast(dict[lang].msgCopied);
-            });
+            navigator.clipboard.writeText(url).then(() => showToast(dict[lang].msgCopied));
         }
 
-        function openUrl(url) {
-            window.open(url, '_blank');
-        }
-
-        function saveData() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
-        }
+        function openUrl(url) { window.open(url, '_blank'); }
+        function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(links)); }
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(links, null, 2));
@@ -303,12 +341,10 @@
             dlAnchorElem.click();
         }
 
-        // Rendering
         function renderLinks() {
             const container = document.getElementById('linksContainer');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             container.innerHTML = '';
-            
             let count = 0;
             links.forEach((url, originalIndex) => {
                 if (url.toLowerCase().includes(searchTerm)) {
@@ -327,7 +363,6 @@
                         <button class="secondary" onclick="copyUrl('${url}')">${dict[lang].btnCopy}</button>
                         <button class="danger" onclick="deleteUrl(${originalIndex})">${dict[lang].btnDel}</button>
                     `;
-                    
                     div.appendChild(textSpan);
                     div.appendChild(actionsDiv);
                     container.appendChild(div);
@@ -336,7 +371,6 @@
             document.getElementById('totalCount').innerText = count;
         }
 
-        // Utilities & UI
         function showToast(msg, isError = false) {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
@@ -365,6 +399,7 @@
         function updateUI() {
             const t = dict[lang];
             document.getElementById('t-login-title').innerText = t.loginTitle;
+            document.getElementById('t-login-sub').innerText = t.loginSub;
             document.getElementById('passwordInput').placeholder = t.passPlaceholder;
             document.getElementById('t-login-btn').innerText = t.loginBtn;
             document.getElementById('logoutBtn').innerText = t.logout;
@@ -375,20 +410,12 @@
             document.getElementById('t-add-btn').innerText = t.addBtn;
             document.getElementById('searchInput').placeholder = t.searchPh;
             
-            if (!document.getElementById('dashboard-section').classList.contains('hidden')) {
-                renderLinks();
-            }
+            if (!document.getElementById('dashboard-section').classList.contains('hidden')) renderLinks();
         }
 
-        // Allow Enter key to login and add url
-        document.getElementById('passwordInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') checkLogin();
-        });
-        document.getElementById('newUrl').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') addUrl();
-        });
+        document.getElementById('passwordInput').addEventListener('keypress', e => { if (e.key === 'Enter') checkLogin(); });
+        document.getElementById('newUrl').addEventListener('keypress', e => { if (e.key === 'Enter') addUrl(); });
 
-        // Start app
         init();
     </script>
 </body>
