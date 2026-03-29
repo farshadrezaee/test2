@@ -1,266 +1,395 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultra Pro Panel</title><style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI';}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farshad Pro Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Vazirmatn:wght@300;400;600&display=swap');
 
-body{
-  height:100vh;
-  background: radial-gradient(circle at top,#0f2027,#000);
-  color:white;
-  transition:0.4s;
-}
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-color: #f8fafc;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --danger: #ef4444;
+            --success: #10b981;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  padding:15px;
-  flex-wrap:wrap;
-}
+        .light-theme {
+            --bg-color: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --text-color: #0f172a;
+            --primary: #6366f1;
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
 
-select,input,button{
-  padding:10px;
-  border:none;
-  border-radius:10px;
-  margin:5px;
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', 'Vazirmatn', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.4s ease;
+            background-image: radial-gradient(circle at top right, rgba(59, 130, 246, 0.2), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.2), transparent 40%);
+        }
 
-button{
-  cursor:pointer;
-  background:linear-gradient(45deg,#00f2fe,#4facfe);
-  color:white;
-  transition:0.3s;
-}
+        body[dir="rtl"] { font-family: 'Vazirmatn', 'Poppins', sans-serif; }
 
-button:hover{transform:scale(1.05);}
+        /* Glassmorphism Classes */
+        .glass {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
 
-.container{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:85vh;
-}
+        /* Top Navigation */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            margin: 1rem;
+        }
 
-.card{
-  width:380px;
-  padding:25px;
-  border-radius:20px;
-  background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(20px);
-  box-shadow:0 0 40px rgba(0,255,255,0.2);
-  text-align:center;
-}
+        .brand { font-size: 1.5rem; font-weight: 600; background: linear-gradient(to right, #3b82f6, #8b5cf6); -webkit-background-clip: text; color: transparent; }
 
-.hidden{display:none;}
+        .controls { display: flex; gap: 10px; }
+        
+        select, button, input {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: inherit;
+            font-family: inherit;
+            outline: none;
+            transition: 0.3s;
+        }
 
-.link-box{
-  background:rgba(0,0,0,0.5);
-  padding:12px;
-  margin-top:10px;
-  border-radius:12px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  transition:0.3s;
-}
+        button { cursor: pointer; font-weight: 600; background: var(--primary); color: white; border: none; }
+        button:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        button.danger { background: var(--danger); }
+        button.success { background: var(--success); }
+        button.secondary { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
 
-.link-box:hover{
-  transform:scale(1.03);
-  background:rgba(0,255,255,0.2);
-}
+        /* Main Container */
+        main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 1rem; }
 
-.actions{
-  display:flex;
-  gap:5px;
-  flex-wrap:wrap;
-}
+        /* Login Screen */
+        #login-section { width: 100%; max-width: 400px; padding: 2.5rem; text-align: center; }
+        #login-section h2 { margin-bottom: 1.5rem; }
+        #login-section input { width: 100%; margin-bottom: 1rem; background: rgba(0,0,0,0.2); }
+        #login-section button { width: 100%; padding: 12px; }
 
-.copy-btn{background:#00ff9d;color:black;}
-.delete-btn{background:#ff4d4d;color:white;}
-.edit-btn{background:#ffaa00;color:black;}
+        /* Dashboard Screen */
+        #dashboard-section { width: 100%; max-width: 800px; padding: 2rem; }
+        .hidden { display: none !important; }
 
-.dashboard{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:15px;
-}
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { padding: 1.5rem; text-align: center; border-radius: 12px; background: rgba(255,255,255,0.02); }
+        .stat-card h3 { font-size: 2rem; color: var(--primary); }
 
-.box{
-  padding:10px;
-  border-radius:12px;
-  background:rgba(255,255,255,0.08);
-}
+        .input-group { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+        .input-group input { flex: 1; background: rgba(0,0,0,0.2); }
 
-</style></head><body><div class="topbar">
-  <div>
-    <select id="lang">
-      <option value="en">English</option>
-      <option value="fa">فارسی</option>
-    </select>
-    <select id="theme">
-      <option value="dark">Dark</option>
-      <option value="neon">Neon</option>
-      <option value="red">Red</option>
-    </select>
-    <input type="color" id="colorPicker">
-  </div>
-</div><div class="container" id="loginPage">
-  <div class="card">
-    <h2 id="loginText">Login</h2>
-    <input type="text" id="username" placeholder="Username"><br>
-    <input type="password" id="password" placeholder="Password"><br>
-    <button onclick="login()" id="loginBtn">Enter</button>
-  </div>
-</div><div class="container hidden" id="panel">
-  <div class="card">
-    <h2 id="addUserText">Add User</h2><div class="dashboard">
-  <div class="box">Links: <span id="linkCount">0</span></div>
-  <div class="box"><button onclick="clearAll()" id="clearBtn">Clear All</button></div>
-</div>
+        /* Link List */
+        .link-list { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px; }
+        .link-list::-webkit-scrollbar { width: 6px; }
+        .link-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-<input type="text" id="search" placeholder="Search...">
+        .link-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent;
+            transition: 0.3s;
+            word-break: break-all;
+        }
+        .link-item:hover { border-color: var(--primary); background: rgba(255, 255, 255, 0.08); }
+        
+        .link-actions { display: flex; gap: 8px; flex-shrink: 0; margin-inline-start: 15px; }
+        .link-actions button { padding: 6px 12px; font-size: 0.85rem; }
 
-<input type="text" id="urlInput" placeholder="Enter URL">
-<button onclick="addLink()" id="addBtn">Add</button>
+        /* Toast Notification */
+        #toast {
+            position: fixed; bottom: 20px; right: 20px;
+            background: var(--success); color: white;
+            padding: 12px 24px; border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            opacity: 0; transform: translateY(20px);
+            transition: 0.4s ease; pointer-events: none; z-index: 1000;
+        }
+        #toast.show { opacity: 1; transform: translateY(0); }
 
-<div id="links"></div>
+        @media (max-width: 600px) {
+            .input-group { flex-direction: column; }
+            .link-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .link-actions { width: 100%; justify-content: flex-end; }
+        }
+    </style>
+</head>
+<body dir="ltr">
 
-  </div>
-</div><script>
-const correct="738382+29191";
-let currentLang='en';
-let links=[];
+    <div id="toast">Message</div>
 
-function login(){
-  if(username.value===correct && password.value===correct){
-    loginPage.classList.add('hidden');
-    panel.classList.remove('hidden');
-    load();
-  }else alert(currentLang==='fa'?'اشتباهه':'Wrong');
-}
+    <header class="glass">
+        <div class="brand">Nexus Pro</div>
+        <div class="controls">
+            <select id="langSelect" onchange="changeLang(this.value)">
+                <option value="en">EN</option>
+                <option value="fa">فا</option>
+            </select>
+            <button class="secondary" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
+            <button id="logoutBtn" class="danger hidden" onclick="logout()">Logout</button>
+        </div>
+    </header>
 
-function save(){
-  localStorage.setItem('links_2',JSON.stringify(links));
-}
+    <main>
+        <div id="login-section" class="glass">
+            <h2 id="t-login-title">System Login</h2>
+            <input type="password" id="passwordInput" placeholder="Enter Password (1234)">
+            <button onclick="checkLogin()" id="t-login-btn">Authenticate</button>
+        </div>
 
-function load(){
-  let s=localStorage.getItem('links_2');
-  if(s) links=JSON.parse(s);
-  render();
-}
+        <div id="dashboard-section" class="glass hidden">
+            <div class="stats-grid">
+                <div class="stat-card glass">
+                    <div id="t-total">Total Links</div>
+                    <h3 id="totalCount">0</h3>
+                </div>
+                <div class="stat-card glass" style="display: flex; justify-content: center; align-items: center;">
+                    <button class="secondary" onclick="exportData()" id="t-export">📦 Export Data</button>
+                </div>
+            </div>
 
-function addLink(){
-  if(!urlInput.value) return;
-  links.push(urlInput.value);
-  save();
-  render();
-  urlInput.value='';
-}
+            <div class="input-group">
+                <input type="url" id="newUrl" placeholder="https://example.com">
+                <button onclick="addUrl()" id="t-add-btn">Add URL</button>
+            </div>
 
-function deleteLink(i){
-  links.splice(i,1);
-  save();
-  render();
-}
+            <div class="input-group">
+                <input type="text" id="searchInput" placeholder="Search links..." oninput="renderLinks()">
+            </div>
 
-function editLink(i){
-  let newUrl=prompt(currentLang==='fa'?'ویرایش لینک':'Edit URL',links[i]);
-  if(newUrl){
-    links[i]=newUrl;
-    save();
-    render();
-  }
-}
+            <div class="link-list" id="linksContainer">
+                </div>
+        </div>
+    </main>
 
-function clearAll(){
-  if(confirm(currentLang==='fa'?'همه حذف شود؟':'Delete all?')){
-    links=[];
-    save();
-    render();
-  }
-}
+    <script>
+        // Data & State
+        const STORAGE_KEY = 'nexus_pro_data_v3';
+        const SECRET_PASS = 'farshadddd'; // رمز ورود پیش‌فرض
+        let links = [];
+        let isDark = true;
+        let lang = 'en';
 
-function render(){
-  let container=document.getElementById('links');
-  container.innerHTML='';
+        // Dictionary for Translations
+        const dict = {
+            en: {
+                loginTitle: "System Login", passPlaceholder: "Enter Password", loginBtn: "Authenticate",
+                logout: "Logout", themeLight: "☀️ Light", themeDark: "🌙 Dark",
+                total: "Total Links", export: "📦 Export Data", addUrlPh: "https://example.com",
+                addBtn: "Add URL", searchPh: "Search links...", btnVisit: "Visit",
+                btnCopy: "Copy", btnDel: "Delete", msgLogin: "Welcome back!",
+                msgWrong: "Incorrect password!", msgAdded: "Link added!", msgCopied: "Copied to clipboard!",
+                msgDeleted: "Link deleted!", msgEmpty: "Please enter a valid URL."
+            },
+            fa: {
+                loginTitle: "ورود به سیستم", passPlaceholder: "رمز عبور را وارد کنید", loginBtn: "تایید هویت",
+                logout: "خروج", themeLight: "☀️ روشن", themeDark: "🌙 تاریک",
+                total: "تعداد لینک‌ها", export: "📦 دریافت بک‌آپ", addUrlPh: "لینک جدید را وارد کنید...",
+                addBtn: "افزودن", searchPh: "جستجو در لینک‌ها...", btnVisit: "باز کردن",
+                btnCopy: "کپی", btnDel: "حذف", msgLogin: "خوش آمدید!",
+                msgWrong: "رمز عبور اشتباه است!", msgAdded: "لینک اضافه شد!", msgCopied: "در حافظه کپی شد!",
+                msgDeleted: "لینک حذف شد!", msgEmpty: "لطفاً یک لینک معتبر وارد کنید."
+            }
+        };
 
-  let keyword=search.value.toLowerCase();
+        // Initialize
+        function init() {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            if (savedData) links = JSON.parse(savedData);
+            
+            // Check session
+            if (sessionStorage.getItem('nexus_logged_in') === 'true') {
+                showDashboard();
+            }
+            updateUI();
+        }
 
-  links.forEach((url,i)=>{
-    if(!url.toLowerCase().includes(keyword)) return;
+        // Authentication
+        function checkLogin() {
+            const pass = document.getElementById('passwordInput').value;
+            if (pass === SECRET_PASS) {
+                sessionStorage.setItem('nexus_logged_in', 'true');
+                document.getElementById('passwordInput').value = '';
+                showDashboard();
+                showToast(dict[lang].msgLogin);
+            } else {
+                showToast(dict[lang].msgWrong, true);
+            }
+        }
 
-    let box=document.createElement('div');
-    box.className='link-box';
+        function logout() {
+            sessionStorage.removeItem('nexus_logged_in');
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+        }
 
-    let span=document.createElement('span');
-    span.innerText=url;
+        function showDashboard() {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.remove('hidden');
+            renderLinks();
+        }
 
-    let actions=document.createElement('div');
-    actions.className='actions';
+        // URL Management
+        function addUrl() {
+            const input = document.getElementById('newUrl');
+            const url = input.value.trim();
+            if (!url) { showToast(dict[lang].msgEmpty, true); return; }
+            
+            // Auto add https:// if missing
+            const finalUrl = (!url.startsWith('http://') && !url.startsWith('https://')) ? 'https://' + url : url;
+            
+            links.unshift(finalUrl); // Add to top
+            saveData();
+            input.value = '';
+            renderLinks();
+            showToast(dict[lang].msgAdded);
+        }
 
-    let copy=document.createElement('button');
-    copy.className='copy-btn';
-    copy.innerText=currentLang==='fa'?'کپی':'Copy';
-    copy.onclick=()=>navigator.clipboard.writeText(url);
+        function deleteUrl(index) {
+            links.splice(index, 1);
+            saveData();
+            renderLinks();
+            showToast(dict[lang].msgDeleted, true);
+        }
 
-    let edit=document.createElement('button');
-    edit.className='edit-btn';
-    edit.innerText=currentLang==='fa'?'ویرایش':'Edit';
-    edit.onclick=()=>editLink(i);
+        function copyUrl(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                showToast(dict[lang].msgCopied);
+            });
+        }
 
-    let del=document.createElement('button');
-    del.className='delete-btn';
-    del.innerText=currentLang==='fa'?'حذف':'Delete';
-    del.onclick=()=>deleteLink(i);
+        function openUrl(url) {
+            window.open(url, '_blank');
+        }
 
-    actions.append(copy,edit,del);
-    box.append(span,actions);
-    container.appendChild(box);
-  });
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+        }
 
-  linkCount.innerText=links.length;
-}
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(links, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", "nexus_links_backup.json");
+            dlAnchorElem.click();
+        }
 
-search.oninput=render;
+        // Rendering
+        function renderLinks() {
+            const container = document.getElementById('linksContainer');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            container.innerHTML = '';
+            
+            let count = 0;
+            links.forEach((url, originalIndex) => {
+                if (url.toLowerCase().includes(searchTerm)) {
+                    count++;
+                    const div = document.createElement('div');
+                    div.className = 'link-item';
+                    
+                    const textSpan = document.createElement('span');
+                    textSpan.textContent = url;
+                    
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'link-actions';
+                    
+                    actionsDiv.innerHTML = `
+                        <button class="success" onclick="openUrl('${url}')">${dict[lang].btnVisit}</button>
+                        <button class="secondary" onclick="copyUrl('${url}')">${dict[lang].btnCopy}</button>
+                        <button class="danger" onclick="deleteUrl(${originalIndex})">${dict[lang].btnDel}</button>
+                    `;
+                    
+                    div.appendChild(textSpan);
+                    div.appendChild(actionsDiv);
+                    container.appendChild(div);
+                }
+            });
+            document.getElementById('totalCount').innerText = count;
+        }
 
-// language
-const texts={
-  en:{login:'Login',add:'Add',addUser:'Add User',url:'Enter URL',search:'Search...'},
-  fa:{login:'ورود',add:'افزودن',addUser:'افزودن کاربر',url:'لینک را وارد کن',search:'جستجو'}
-};
+        // Utilities & UI
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.background = isError ? 'var(--danger)' : 'var(--success)';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
 
-lang.onchange=function(){
-  currentLang=this.value;
-  let t=texts[currentLang];
+        function toggleTheme() {
+            isDark = !isDark;
+            if (isDark) {
+                document.body.classList.remove('light-theme');
+                document.getElementById('themeBtn').innerText = dict[lang].themeLight;
+            } else {
+                document.body.classList.add('light-theme');
+                document.getElementById('themeBtn').innerText = dict[lang].themeDark;
+            }
+        }
 
-  loginText.innerText=t.login;
-  addUserText.innerText=t.addUser;
-  loginBtn.innerText=t.login;
-  addBtn.innerText=t.add;
-  urlInput.placeholder=t.url;
-  search.placeholder=t.search;
-  clearBtn.innerText=currentLang==='fa'?'حذف همه':'Clear All';
-  render();
-};
+        function changeLang(newLang) {
+            lang = newLang;
+            document.body.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
+            updateUI();
+        }
 
-// theme
-theme.onchange=function(){
-  if(this.value==='neon'){
-    body.style.background='black';
-    body.style.color='#00ffff';
-  }else if(this.value==='red'){
-    body.style.background='linear-gradient(#200,#600)';
-  }else{
-    body.style.background='radial-gradient(circle at top,#0f2027,#000)';
-    body.style.color='white';
-  }
-};
+        function updateUI() {
+            const t = dict[lang];
+            document.getElementById('t-login-title').innerText = t.loginTitle;
+            document.getElementById('passwordInput').placeholder = t.passPlaceholder;
+            document.getElementById('t-login-btn').innerText = t.loginBtn;
+            document.getElementById('logoutBtn').innerText = t.logout;
+            document.getElementById('themeBtn').innerText = isDark ? t.themeLight : t.themeDark;
+            document.getElementById('t-total').innerText = t.total;
+            document.getElementById('t-export').innerText = t.export;
+            document.getElementById('newUrl').placeholder = t.addUrlPh;
+            document.getElementById('t-add-btn').innerText = t.addBtn;
+            document.getElementById('searchInput').placeholder = t.searchPh;
+            
+            if (!document.getElementById('dashboard-section').classList.contains('hidden')) {
+                renderLinks();
+            }
+        }
 
-colorPicker.oninput=function(){
-  document.body.style.background=this.value;
-};
+        // Allow Enter key to login and add url
+        document.getElementById('passwordInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') checkLogin();
+        });
+        document.getElementById('newUrl').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') addUrl();
+        });
 
-</script></body>
+        // Start app
+        init();
+    </script>
+</body>
 </html>
