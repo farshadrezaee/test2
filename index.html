@@ -227,6 +227,8 @@
     <script>
         const STORAGE_KEY = 'aynaz_panel_v5'; 
         const SECRET_PASS = '1234';
+        const BIN_ID = '69c92e07ed015c742bc9b3ef';
+        const API_KEY = '$2a$10$kW1qWWHGJbO99i8Ph2ufV.oGsKEaaSljparg6NyXjBA.SGsOf4.X.';
         let items = [];
         let isDark = true;
         let lang = 'en';
@@ -329,7 +331,25 @@
             window.open(urlToOpen, '_blank'); 
         }
 
-        function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }
+        function saveData() {
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); 
+
+            if(!BIN_ID || BIN_ID === 'ایدی_بین_شما_اینجا') return;
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': API_KEY
+                    },
+                    body: JSON.stringify(items)
+                });
+            } catch (e) {
+                
+            }
+        
+        }
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(items, null, 2));
