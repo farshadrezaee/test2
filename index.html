@@ -1,0 +1,266 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultra Pro Panel</title><style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI';}
+
+body{
+  height:100vh;
+  background: radial-gradient(circle at top,#0f2027,#000);
+  color:white;
+  transition:0.4s;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  padding:15px;
+  flex-wrap:wrap;
+}
+
+select,input,button{
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  margin:5px;
+}
+
+button{
+  cursor:pointer;
+  background:linear-gradient(45deg,#00f2fe,#4facfe);
+  color:white;
+  transition:0.3s;
+}
+
+button:hover{transform:scale(1.05);}
+
+.container{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:85vh;
+}
+
+.card{
+  width:380px;
+  padding:25px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 40px rgba(0,255,255,0.2);
+  text-align:center;
+}
+
+.hidden{display:none;}
+
+.link-box{
+  background:rgba(0,0,0,0.5);
+  padding:12px;
+  margin-top:10px;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  transition:0.3s;
+}
+
+.link-box:hover{
+  transform:scale(1.03);
+  background:rgba(0,255,255,0.2);
+}
+
+.actions{
+  display:flex;
+  gap:5px;
+  flex-wrap:wrap;
+}
+
+.copy-btn{background:#00ff9d;color:black;}
+.delete-btn{background:#ff4d4d;color:white;}
+.edit-btn{background:#ffaa00;color:black;}
+
+.dashboard{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:15px;
+}
+
+.box{
+  padding:10px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.08);
+}
+
+</style></head><body><div class="topbar">
+  <div>
+    <select id="lang">
+      <option value="en">English</option>
+      <option value="fa">فارسی</option>
+    </select>
+    <select id="theme">
+      <option value="dark">Dark</option>
+      <option value="neon">Neon</option>
+      <option value="red">Red</option>
+    </select>
+    <input type="color" id="colorPicker">
+  </div>
+</div><div class="container" id="loginPage">
+  <div class="card">
+    <h2 id="loginText">Login</h2>
+    <input type="text" id="username" placeholder="Username"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()" id="loginBtn">Enter</button>
+  </div>
+</div><div class="container hidden" id="panel">
+  <div class="card">
+    <h2 id="addUserText">Add User</h2><div class="dashboard">
+  <div class="box">Links: <span id="linkCount">0</span></div>
+  <div class="box"><button onclick="clearAll()" id="clearBtn">Clear All</button></div>
+</div>
+
+<input type="text" id="search" placeholder="Search...">
+
+<input type="text" id="urlInput" placeholder="Enter URL">
+<button onclick="addLink()" id="addBtn">Add</button>
+
+<div id="links"></div>
+
+  </div>
+</div><script>
+const correct="738382+29191";
+let currentLang='en';
+let links=[];
+
+function login(){
+  if(username.value===correct && password.value===correct){
+    loginPage.classList.add('hidden');
+    panel.classList.remove('hidden');
+    load();
+  }else alert(currentLang==='fa'?'اشتباهه':'Wrong');
+}
+
+function save(){
+  localStorage.setItem('links',JSON.stringify(links));
+}
+
+function load(){
+  let s=localStorage.getItem('links');
+  if(s) links=JSON.parse(s);
+  render();
+}
+
+function addLink(){
+  if(!urlInput.value) return;
+  links.push(urlInput.value);
+  save();
+  render();
+  urlInput.value='';
+}
+
+function deleteLink(i){
+  links.splice(i,1);
+  save();
+  render();
+}
+
+function editLink(i){
+  let newUrl=prompt(currentLang==='fa'?'ویرایش لینک':'Edit URL',links[i]);
+  if(newUrl){
+    links[i]=newUrl;
+    save();
+    render();
+  }
+}
+
+function clearAll(){
+  if(confirm(currentLang==='fa'?'همه حذف شود؟':'Delete all?')){
+    links=[];
+    save();
+    render();
+  }
+}
+
+function render(){
+  let container=document.getElementById('links');
+  container.innerHTML='';
+
+  let keyword=search.value.toLowerCase();
+
+  links.forEach((url,i)=>{
+    if(!url.toLowerCase().includes(keyword)) return;
+
+    let box=document.createElement('div');
+    box.className='link-box';
+
+    let span=document.createElement('span');
+    span.innerText=url;
+
+    let actions=document.createElement('div');
+    actions.className='actions';
+
+    let copy=document.createElement('button');
+    copy.className='copy-btn';
+    copy.innerText=currentLang==='fa'?'کپی':'Copy';
+    copy.onclick=()=>navigator.clipboard.writeText(url);
+
+    let edit=document.createElement('button');
+    edit.className='edit-btn';
+    edit.innerText=currentLang==='fa'?'ویرایش':'Edit';
+    edit.onclick=()=>editLink(i);
+
+    let del=document.createElement('button');
+    del.className='delete-btn';
+    del.innerText=currentLang==='fa'?'حذف':'Delete';
+    del.onclick=()=>deleteLink(i);
+
+    actions.append(copy,edit,del);
+    box.append(span,actions);
+    container.appendChild(box);
+  });
+
+  linkCount.innerText=links.length;
+}
+
+search.oninput=render;
+
+// language
+const texts={
+  en:{login:'Login',add:'Add',addUser:'Add User',url:'Enter URL',search:'Search...'},
+  fa:{login:'ورود',add:'افزودن',addUser:'افزودن کاربر',url:'لینک را وارد کن',search:'جستجو'}
+};
+
+lang.onchange=function(){
+  currentLang=this.value;
+  let t=texts[currentLang];
+
+  loginText.innerText=t.login;
+  addUserText.innerText=t.addUser;
+  loginBtn.innerText=t.login;
+  addBtn.innerText=t.add;
+  urlInput.placeholder=t.url;
+  search.placeholder=t.search;
+  clearBtn.innerText=currentLang==='fa'?'حذف همه':'Clear All';
+  render();
+};
+
+// theme
+theme.onchange=function(){
+  if(this.value==='neon'){
+    body.style.background='black';
+    body.style.color='#00ffff';
+  }else if(this.value==='red'){
+    body.style.background='linear-gradient(#200,#600)';
+  }else{
+    body.style.background='radial-gradient(circle at top,#0f2027,#000)';
+    body.style.color='white';
+  }
+};
+
+colorPicker.oninput=function(){
+  document.body.style.background=this.value;
+};
+
+</script></body>
+</html>
